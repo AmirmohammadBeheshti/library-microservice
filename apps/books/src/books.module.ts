@@ -3,7 +3,7 @@ import { BooksController } from './books.controller';
 import { BooksService } from './books.service';
 import { ConfigModule } from '@nestjs/config';
 import * as joi from 'joi';
-import { AUTH_SERVICE, DatabaseModule } from '@app/common';
+import { AUTH_SERVICE, DatabaseModule, RmqService } from '@app/common';
 import { ClientsModule, RedisOptions, Transport } from '@nestjs/microservices';
 import { ConfigService } from '@nestjs/config';
 import { GenreModule } from './genre/genre.module';
@@ -49,6 +49,6 @@ import { MongooseModule } from '@nestjs/mongoose';
     }),
   ],
   controllers: [BooksController],
-  providers: [BooksService, BooksRepository, BooksSerializer],
+  providers: [BooksService, BooksRepository, BooksSerializer, RmqService],
 })
 export class BooksModule {}

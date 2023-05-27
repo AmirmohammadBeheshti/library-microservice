@@ -2,8 +2,9 @@ import { NestFactory } from '@nestjs/core';
 import { BooksModule } from './books.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ValidationPipe } from '@nestjs/common';
-import { Transport } from '@nestjs/microservices';
+import { RmqOptions, Transport } from '@nestjs/microservices';
 import { ConfigService } from '@nestjs/config';
+import { BOOKS_SERVICE, RmqService } from '@app/common';
 
 async function bootstrap() {
   const app = await NestFactory.create(BooksModule);
@@ -12,13 +13,14 @@ async function bootstrap() {
   app.connectMicroservice({
     transport: Transport.RMQ,
     options: {
-      urls: ['amqp://localhost:5672'],
-      queue: 'books_queue',
+      urls: ['amqp://guest:guest@localhost:5672/'],
+      queue: BOOKS_SERVICE,
       queueOptions: {
         durable: false,
       },
     },
   });
+
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
   const config = new DocumentBuilder()
     .setTitle('Books')

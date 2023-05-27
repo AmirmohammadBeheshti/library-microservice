@@ -1,14 +1,23 @@
 import { Module } from '@nestjs/common';
 import { CartController } from './cart.controller';
 import { CartService } from './cart.service';
-import { AUTH_SERVICE, DatabaseModule } from '@app/common';
+import {
+  AUTH_SERVICE,
+  BOOKS_SERVICE,
+  DatabaseModule,
+  RmqModule,
+} from '@app/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import * as joi from 'joi';
+import { CartSerializer } from './cart.serializer';
+import { CartRepository } from './cart.repository';
+import { Cart, CartSchema } from './schema/cart.schema';
+import { MongooseModule } from '@nestjs/mongoose';
 @Module({
   imports: [
     DatabaseModule,
-    // MongooseModule.forFeature([{ name: Books.name, schema: BooksSchema }]),
+    MongooseModule.forFeature([{ name: Cart.name, schema: CartSchema }]),
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: './apps/cart/.env',
@@ -19,6 +28,22 @@ import * as joi from 'joi';
       }),
     }),
     ClientsModule.registerAsync([
+      {
+        name: BOOKS_SERVICE,
+        useFactory: (configService: ConfigService) => ({
+          transport: Transport.RMQ,
+          options: {
+            urls: ['amqp://guest:guest@localhost:5672/'],
+            queue: BOOKS_SERVICE,
+            queueOptions: {
+              durable: false,
+            },
+            noAck: false,
+            persistent: true,
+          },
+          inject: [ConfigService],
+        }),
+      },
       {
         name: AUTH_SERVICE,
         useFactory: (configService: ConfigService) => ({
@@ -33,6 +58,6 @@ import * as joi from 'joi';
     ]),
   ],
   controllers: [CartController],
-  providers: [CartService],
+  providers: [CartService, CartSerializer, CartRepository],
 })
 export class CartModule {}

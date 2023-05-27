@@ -6,7 +6,7 @@ import { IErrMsgRepository } from '@app/common/database/repository.type';
 import { Cart } from './schema/cart.schema';
 
 @Injectable()
-export class BooksRepository extends BaseMongooseRepository<Cart> {
+export class CartRepository extends BaseMongooseRepository<Cart> {
   constructor(@InjectModel(Cart.name) private cartModel: Model<Cart>) {
     const errMsg: IErrMsgRepository = {
       duplicateErr: 'این کتاب تکراری است',

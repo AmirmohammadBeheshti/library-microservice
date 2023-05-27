@@ -6,6 +6,7 @@ import { Genre } from './genre/schema/genre.schema';
 import { Books } from './schema/books.schema';
 import { GenreData } from './schema/genre-data.schema';
 import { IPaginationOptions } from '@app/common/database/repository.interface';
+import { RpcException } from '@nestjs/microservices';
 
 @Injectable()
 export class BooksService {
@@ -47,6 +48,13 @@ export class BooksService {
     return await this.bookRepo.findOneOrFailed({ _id: id, isDeleted: false });
   }
 
+  public async findBook(id: string): Promise<Books> {
+    const book = await this.bookRepo.findOne({ _id: id, isDeleted: false });
+    if (!book) {
+      throw new RpcException('کتاب مورد نظر یافت نشد');
+    }
+    return book;
+  }
   public async deleteBook(bookId: string) {
     await this.findBookById(bookId);
     return this.bookRepo.remove({ _id: bookId });
