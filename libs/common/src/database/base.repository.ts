@@ -30,7 +30,6 @@ export abstract class BaseMongooseRepository<TEntity extends Document> {
 
   protected handleCreateAndUpdateError(error) {
     console.log('DB Error:', error);
-
     if (error.name === 'ValidationError') {
       const errorObj = [];
       Object.keys(error.errors).forEach((item) => {
@@ -40,6 +39,7 @@ export abstract class BaseMongooseRepository<TEntity extends Document> {
     }
     switch (error.code) {
       case 11000:
+        console.log(error.message || this.errMsg.duplicateErr);
         throw new BadRequestException(
           error.message || this.errMsg.duplicateErr,
         );
