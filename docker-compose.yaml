@@ -1,16 +1,22 @@
 services:
-  auth:
-    build:
-      context: .
-      dockerfile: ./apps/auth/Dockerfile
-      target: development
-    command: pnpm run start:dev auth
-    ports :
-      - '3000:3000'
-    volumes:
-     - .:/usr/src/app
+  # auth:
+  #   build:
+  #     context: .
+  #     dockerfile: ./apps/auth/Dockerfile
+  #     target: development
+  #   command: pnpm run start:dev auth
+  #   ports :
+  #     - '3000:3000'
+  #   volumes:
+  #    - .:/usr/src/app
   mongo :
     image: mongo
     restart: always
     ports:
       - 27018:27017
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: 'rabbitmq'
+    ports:
+        - 5672:5672
+        - 15672:15672

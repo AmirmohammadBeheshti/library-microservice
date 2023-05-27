@@ -16,6 +16,8 @@ export class Books extends Document {
   publicationDate: Date;
   @Prop({ type: Number, required: true })
   price: number;
+  @Prop({ type: Number, default: 0 })
+  salesAmount: number;
   @Prop({ type: String })
   description?: string;
   @Prop({ type: Boolean, default: false })

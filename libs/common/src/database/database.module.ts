@@ -14,8 +14,6 @@ import { MongooseModule } from '@nestjs/mongoose';
         serverSelectionTimeoutMS: 30000,
         socketTimeoutMS: 75000,
         family: 4,
-        keepAlive: true,
-        keepAliveInitialDelay: 300000,
         ignoreUndefined: true,
       }),
       inject: [ConfigService],

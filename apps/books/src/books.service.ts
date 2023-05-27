@@ -62,4 +62,17 @@ export class BooksService {
     if (!findGenre) throw new NotFoundException('ژانر مورد نظر پیدا نشد');
     return findGenre;
   }
+
+  async increaseSaleAmount(bookId: string) {
+    return await this.bookRepo.updateOne(
+      { _id: bookId },
+      { $inc: { salesAmount: +1 } },
+    );
+  }
+  async decreaseSaleAmount(bookId: string) {
+    return await this.bookRepo.updateOne(
+      { _id: bookId },
+      { $inc: { salesAmount: -1 } },
+    );
+  }
 }
