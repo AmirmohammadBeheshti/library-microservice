@@ -16,7 +16,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
             request?.headers?.Authentication ||
             request?.headers?.authorization ||
             request?.Authorization;
-          return jwt.replace(/bearer/gi, '').trim();
+          return jwt && jwt.replace(/bearer/gi, '').trim();
         },
       ]),
       ignoreExpiration: false,
