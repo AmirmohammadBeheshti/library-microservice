@@ -7,10 +7,15 @@ import { AUTH_SERVICE, DatabaseModule } from '@app/common';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { ConfigService } from '@nestjs/config';
 import { GenreModule } from './genre/genre.module';
+import { BooksRepository } from './books.repository';
+import { BooksSerializer } from './books.serializer';
+import { Books, BooksSchema } from './schema/books.schema';
+import { MongooseModule } from '@nestjs/mongoose';
 
 @Module({
   imports: [
     DatabaseModule,
+    MongooseModule.forFeature([{ name: Books.name, schema: BooksSchema }]),
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: './apps/books/.env',
@@ -36,6 +41,6 @@ import { GenreModule } from './genre/genre.module';
     GenreModule,
   ],
   controllers: [BooksController],
-  providers: [BooksService],
+  providers: [BooksService, BooksRepository, BooksSerializer],
 })
 export class BooksModule {}

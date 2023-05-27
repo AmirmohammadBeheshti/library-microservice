@@ -28,5 +28,6 @@ import { ConfigService } from '@nestjs/config';
   ],
   controllers: [GenreController],
   providers: [GenreService, GenreSerializer, GenreRepository],
+  exports: [GenreService],
 })
 export class GenreModule {}

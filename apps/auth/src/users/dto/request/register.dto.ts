@@ -1,6 +1,12 @@
 import { UserLevel } from '@app/common';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsString, IsEnum } from 'class-validator';
+import {
+  IsNotEmpty,
+  IsString,
+  IsEnum,
+  IsStrongPassword,
+  IsMobilePhone,
+} from 'class-validator';
 
 export class RegisterDto {
   @ApiProperty({
@@ -37,6 +43,7 @@ export class RegisterDto {
   })
   @IsNotEmpty()
   @IsString()
+  @IsMobilePhone('fa-IR')
   mobile: string;
   @ApiProperty({
     default: 'password123',
@@ -44,5 +51,6 @@ export class RegisterDto {
   })
   @IsNotEmpty()
   @IsString()
+  @IsStrongPassword()
   password: string;
 }

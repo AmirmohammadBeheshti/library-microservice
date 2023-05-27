@@ -15,4 +15,8 @@ export class GenreService {
       name: name && { $regex: name },
     });
   }
+
+  async findGenreById(id: string) {
+    return this.genreRepo.findOne({ _id: id });
+  }
 }
