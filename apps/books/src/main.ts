@@ -1,9 +1,11 @@
 import { NestFactory } from '@nestjs/core';
 import { BooksModule } from './books.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.create(BooksModule);
+  app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
   const config = new DocumentBuilder()
     .setTitle('Books')
     .setDescription('Library Document API')

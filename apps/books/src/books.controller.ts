@@ -7,10 +7,10 @@ import { JwtAuthGuard } from '@app/common';
 export class BooksController {
   constructor(private readonly booksService: BooksService) {}
 
-  @ApiBearerAuth()
-  @UseGuards(JwtAuthGuard)
-  @Get()
-  getHello(): string {
-    return this.booksService.getHello();
-  }
+  // @ApiBearerAuth()
+  // @UseGuards(JwtAuthGuard)
+  // @Get()
+  // getHello(): string {
+  //   return this.booksService.getHello();
+  // }
 }

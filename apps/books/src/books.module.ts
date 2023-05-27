@@ -6,6 +6,7 @@ import * as joi from 'joi';
 import { AUTH_SERVICE, DatabaseModule } from '@app/common';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { ConfigService } from '@nestjs/config';
+import { GenreModule } from './genre/genre.module';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { ConfigService } from '@nestjs/config';
         inject: [ConfigService],
       },
     ]),
+    GenreModule,
   ],
   controllers: [BooksController],
   providers: [BooksService],
