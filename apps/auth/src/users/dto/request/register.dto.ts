@@ -1,5 +1,6 @@
+import { UserLevel } from '@app/common';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsNotEmpty, IsString, IsEnum } from 'class-validator';
 
 export class RegisterDto {
   @ApiProperty({
@@ -16,6 +17,13 @@ export class RegisterDto {
   @IsNotEmpty()
   @IsString()
   lastName: string;
+  @ApiProperty({
+    default: UserLevel.NORMAL,
+    required: true,
+  })
+  @IsNotEmpty()
+  @IsEnum(UserLevel)
+  level: UserLevel;
   @ApiProperty({
     default: 'username',
     required: true,
