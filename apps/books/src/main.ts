@@ -8,7 +8,6 @@ async function bootstrap() {
     .setTitle('Books')
     .setDescription('Library Document API')
     .setVersion('1.0')
-    .addTag('Library')
     .addBearerAuth({
       type: 'http',
       scheme: 'bearer',
