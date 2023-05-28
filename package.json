@@ -25,6 +25,7 @@
     "@nestjs/config": "^2.3.2",
     "@nestjs/core": "^9.0.0",
     "@nestjs/jwt": "^10.0.3",
+    "@nestjs/mapped-types": "^1.2.2",
     "@nestjs/microservices": "^9.0.0",
     "@nestjs/mongoose": "^9.2.2",
     "@nestjs/passport": "^9.0.3",

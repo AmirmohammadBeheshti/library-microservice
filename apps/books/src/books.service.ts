@@ -16,6 +16,7 @@ import { RpcException } from '@nestjs/microservices';
 import { Cache } from 'cache-manager';
 import { TOP_BOOK } from './constants';
 import { Types } from 'mongoose';
+import { UserLevel } from '@app/common';
 
 @Injectable()
 export class BooksService implements OnModuleInit {
@@ -33,6 +34,7 @@ export class BooksService implements OnModuleInit {
     const genre = await this.validateGenre(createBook.genre);
     return await this.bookRepo.create({
       ...createBook,
+
       genre: this.fillGenreInfo(genre),
     });
   }
@@ -41,19 +43,29 @@ export class BooksService implements OnModuleInit {
     await this.findBookById(bookId);
     const genre =
       updateBook.genre && (await this.validateGenre(updateBook.genre));
-    return await this.bookRepo.create({
-      ...updateBook,
-      genre: genre ? this.fillGenreInfo(genre) : undefined,
-    });
+    return await this.bookRepo.findOneAndUpdate(
+      { _id: bookId },
+      {
+        title: updateBook.title,
+        author: updateBook.author,
+        description: updateBook.description,
+        isPremium: updateBook.isPremium,
+        price: updateBook.price,
+        publicationDate: updateBook.publicationDate,
+        genre: genre ? this.fillGenreInfo(genre) : undefined,
+      },
+    );
   }
 
-  public async filter(filterBooks: FilterBookDto) {
+  public async filter(filterBooks: FilterBookDto, userLevel: UserLevel) {
     const { take, page, author, genre, price, publicationDate, title } =
       filterBooks;
+    console.log(userLevel !== UserLevel.PREMIUM);
     const pagination: IPaginationOptions = { take, page };
     return await this.bookRepo.findAndPaginate(pagination, {
       title: title && { $regex: title },
       'genre.name': genre,
+      isPremium: userLevel === UserLevel.PREMIUM ? undefined : false,
       price,
       publicationDate,
       author,

@@ -6,6 +6,7 @@ import {
   IsMongoId,
   IsNumber,
   IsOptional,
+  IsBoolean,
 } from 'class-validator';
 import { Transform } from 'class-transformer';
 import * as dayjs from 'dayjs';
@@ -47,6 +48,13 @@ export class CreateBookDto {
   @IsNotEmpty()
   @IsNumber()
   price: string;
+  @ApiProperty({
+    default: false,
+    required: true,
+  })
+  @IsNotEmpty()
+  @IsBoolean()
+  isPremium: boolean;
   @ApiProperty({
     default: 'Description about book ',
     required: false,

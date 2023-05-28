@@ -13,11 +13,12 @@ import {
 } from '@nestjs/common';
 import { BooksService } from './books.service';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { JwtAuthGuard, ValidateMongoId } from '@app/common';
+import { CurrentUser, JwtAuthGuard, ValidateMongoId } from '@app/common';
 import { CreateBookDto, FilterBookDto, UpdateBookDto } from './dto/request';
 import { BooksSerializer } from './books.serializer';
 import { Cache } from 'cache-manager';
 import { MessagePattern, Payload, RpcException } from '@nestjs/microservices';
+import { User } from 'apps/auth/src/users/schema/user.schema';
 
 @ApiBearerAuth()
 @ApiTags('Books')
@@ -40,8 +41,8 @@ export class BooksController {
     @Body() updateBook: UpdateBookDto,
     @Param('id', ValidateMongoId) id: string,
   ) {
-    const create = await this.booksService.updateBook(id, updateBook);
-    return this.booksSerializer.serialize(create);
+    const update = await this.booksService.updateBook(id, updateBook);
+    return this.booksSerializer.serialize(update);
   }
   @UseGuards(JwtAuthGuard)
   @Delete(':id')
@@ -50,8 +51,11 @@ export class BooksController {
   }
   @UseGuards(JwtAuthGuard)
   @Get()
-  async filterBooks(@Query() filterBook: FilterBookDto) {
-    const filter = await this.booksService.filter(filterBook);
+  async filterBooks(
+    @Query() filterBook: FilterBookDto,
+    @CurrentUser() user: User,
+  ) {
+    const filter = await this.booksService.filter(filterBook, user.level);
     return this.booksSerializer.serializePaginated(filter);
   }
   @UseGuards(JwtAuthGuard)
