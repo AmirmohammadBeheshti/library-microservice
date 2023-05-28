@@ -29,6 +29,7 @@ import { LocalStrategy } from './strategy/local.strategy';
         MONGODB_URI: joi.string().required(),
         JWT_SECRET: joi.string().required(),
         JWT_EXPIRATION: joi.string().required(),
+        TCP_PORT: joi.number().required(),
       }),
     }),
   ],

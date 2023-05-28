@@ -6,11 +6,48 @@ services:
       target: development
     command: pnpm run start:dev auth
     ports :
-      - '3000:3000'
+      - '4000:4000'
+    env_file :
+      - ./apps/auth/.env
     volumes:
-     - .:/usr/src/app
+      - .:/usr/src/app
+  books:
+    build:
+      context: .
+      dockerfile: ./apps/books/Dockerfile
+      target: development
+    command: pnpm run start:dev books
+    ports :
+      - '3000:3000'
+    env_file :
+      - ./apps/books/.env
+    volumes:
+      - .:/usr/src/app
+  cart:
+    build:
+      context: .
+      dockerfile: ./apps/cart/Dockerfile
+      target: development
+    command: pnpm run start:dev cart
+    ports :
+      - '5000:5000'
+    env_file :
+      - ./apps/cart/.env
+    volumes:
+      - .:/usr/src/app
   mongo :
     image: mongo
     restart: always
     ports:
       - 27018:27017
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: 'rabbitmq'
+    ports:
+        - 5672:5672
+        - 15672:15672
+  redis:
+    image: redis:7.0-rc1-alpine3.15
+    restart: always
+    ports:
+      - 6379:6379
