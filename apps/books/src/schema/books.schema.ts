@@ -21,6 +21,8 @@ export class Books extends Document {
   @Prop({ type: String })
   description?: string;
   @Prop({ type: Boolean, default: false })
+  isPremium: boolean;
+  @Prop({ type: Boolean, default: false })
   isDeleted: boolean;
 }
 

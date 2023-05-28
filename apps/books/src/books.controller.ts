@@ -26,7 +26,6 @@ export class BooksController {
   constructor(
     private readonly booksService: BooksService,
     private readonly booksSerializer: BooksSerializer,
-    @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}
   @UseGuards(JwtAuthGuard)
   @Post()
