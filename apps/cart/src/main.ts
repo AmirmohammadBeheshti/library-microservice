@@ -2,6 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { CartModule } from './cart.module';
 import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { ConfigService } from '@nestjs/config';
 
 async function bootstrap() {
   const app = await NestFactory.create(CartModule);

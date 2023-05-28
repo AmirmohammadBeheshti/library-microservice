@@ -5,8 +5,9 @@ WORKDIR /usr/src/app
 
 COPY package.json pnpm-lock.yaml ./
 
-RUN npm install -g pnpm && \
-    pnpm install
+RUN npm install -g pnpm 
+
+RUN  pnpm install 
 
 COPY . .
 # The . in COPY . . means that all the files and directories in the build context will be copied into the root of the container. 
@@ -24,8 +25,9 @@ WORKDIR /usr/src/app
 
 COPY package.json pnpm-lock.yaml ./
 
-RUN npm install -g pnpm && \
-    pnpm install --prod
+RUN npm install -g pnpm 
+
+RUN  pnpm install --prod
     
 # -- prod flag just for install  dependency and not dev dependency for example dont install the type on DevDependency
 

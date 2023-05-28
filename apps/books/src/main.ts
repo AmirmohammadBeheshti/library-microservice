@@ -13,7 +13,7 @@ async function bootstrap() {
   app.connectMicroservice({
     transport: Transport.RMQ,
     options: {
-      urls: ['amqp://guest:guest@localhost:5672/'],
+      urls: [configService.get('RMQ_URL')],
       queue: BOOKS_SERVICE,
       queueOptions: {
         durable: false,

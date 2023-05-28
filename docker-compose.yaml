@@ -1,14 +1,16 @@
 services:
-  # auth:
-  #   build:
-  #     context: .
-  #     dockerfile: ./apps/auth/Dockerfile
-  #     target: development
-  #   command: pnpm run start:dev auth
-  #   ports :
-  #     - '3000:3000'
-  #   volumes:
-  #    - .:/usr/src/app
+  auth:
+    build:
+      context: .
+      dockerfile: ./apps/auth/Dockerfile
+      target: development
+    command: pnpm run start:dev auth
+    ports :
+      - '3000:3000'
+    env_file :
+      - ./apps/auth/.env
+    volumes:
+      - .:/usr/src/app
   mongo :
     image: mongo
     restart: always
@@ -20,3 +22,8 @@ services:
     ports:
         - 5672:5672
         - 15672:15672
+  redis:
+    image: redis:7.0-rc1-alpine3.15
+    restart: always
+    ports:
+      - 6379:6379

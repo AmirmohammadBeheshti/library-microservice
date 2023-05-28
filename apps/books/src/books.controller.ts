@@ -16,8 +16,7 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { CurrentUser, JwtAuthGuard, ValidateMongoId } from '@app/common';
 import { CreateBookDto, FilterBookDto, UpdateBookDto } from './dto/request';
 import { BooksSerializer } from './books.serializer';
-import { Cache } from 'cache-manager';
-import { MessagePattern, Payload, RpcException } from '@nestjs/microservices';
+import { EventPattern, MessagePattern, Payload } from '@nestjs/microservices';
 import { User } from 'apps/auth/src/users/schema/user.schema';
 
 @ApiBearerAuth()
@@ -65,12 +64,12 @@ export class BooksController {
     return this.booksSerializer.serialize(findOne);
   }
 
-  @MessagePattern('increase-sale-amount')
+  @EventPattern('increase-sale-amount')
   async increaseSaleAmount(@Payload() bookId: string) {
     return await this.booksService.increaseSaleAmount(bookId);
   }
 
-  @MessagePattern('decrease-sale-amount')
+  @EventPattern('decrease-sale-amount')
   async decreaseSaleAmount(@Payload() bookId: string) {
     return await this.booksService.decreaseSaleAmount(bookId);
   }

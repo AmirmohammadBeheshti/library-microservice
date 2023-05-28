@@ -25,6 +25,7 @@ import { MongooseModule } from '@nestjs/mongoose';
         AUTH_PORT: joi.number().required(),
         REDIS_HOST: joi.string().required(),
         REDIS_PORT: joi.string().required(),
+        RMQ_URL: joi.string().required(),
       }),
     }),
     ClientsModule.registerAsync([

@@ -20,7 +20,6 @@ export class CartService {
   ) {}
   async filterCart(userId: string, filterCart: FilterCartDto) {
     const { take, page, isPaid } = filterCart;
-    console.log(isPaid);
     const pagination: IPaginationOptions = { take, page };
     return await this.cartRepo.findAndPaginate(pagination, { isPaid, userId });
   }
@@ -41,7 +40,7 @@ export class CartService {
         $pull: { products: { id: info.bookId } },
       },
     );
-    this.client.send('decrease-sale-amount', bookId);
+    this.client.emit('decrease-sale-amount', bookId);
     return true;
   }
   async addCart(info: { userId: string; bookId: string }) {
@@ -49,11 +48,12 @@ export class CartService {
     let bookInfo;
     try {
       bookInfo = await lastValueFrom(this.client.send('book-info', bookId));
+      console.log(bookInfo);
     } catch (e) {
       throw new NotFoundException(e);
     }
 
-    this.client.send('increase-sale-amount', bookId);
+    this.client.emit('increase-sale-amount', bookId);
     const findOpenCart = await this.cartRepo.findOne({
       userId: info.userId,
       isPaid: false,
