@@ -27,6 +27,7 @@ export class AuthController {
   async register(@Body() registerDto: RegisterDto) {
     return await lastValueFrom(this.auth.send('register', registerDto));
   }
+
   @UseGuards(LocalAuthGuard)
   @Post('login')
   async login(@CurrentUser('id') user: User, @Body() loginDto: LoginDto) {

@@ -1,7 +1,7 @@
 # Development
 FROM node:alpine AS development
 
-WORKDIR /usr/src/app
+WORKDIR /app
 
 COPY package.json pnpm-lock.yaml ./
 
@@ -21,7 +21,7 @@ ARG NODE_ENV=production
 # ARG its variable just on the build time
 ENV NODE_ENV=${NODE_ENV}
 
-WORKDIR /usr/src/app
+WORKDIR /app
 
 COPY package.json pnpm-lock.yaml ./
 

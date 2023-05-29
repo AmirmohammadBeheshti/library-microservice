@@ -1,75 +1,73 @@
 version : '8'
 services:
-
-  db:
-    image: mongo:latest
-    restart: always
-    ports:
-      - 27018:27017
-    environment:
-      MONGODB_DATABASE: bia2aroosi
-   
-
-
   auth:
+    container_name: Auth
     build:
       context: .
       dockerfile: ./apps/auth/Dockerfile
       target: development
     command: pnpm run start:dev auth
     ports :
-      - '5000:4000'
-    environment:
-      - MONGODB_URI=mongodb://localhost:27017/auth
-      - JWT_SECRET=54SDDFS54FDF8ERER5ASDASEDWQ5QERTRTD2FG12W221RR5SRF54SF1GXsdf4q5erf6q
-      - JWT_EXPIRATION=3600
-      - TCP_PORT=3002
-  test:
+      - '4000:4000'
+  http-gateway:
+    container_name: Http-Gateway
     build:
       context: .
-      dockerfile: ./apps/test/Dockerfile
+      dockerfile: ./apps/http-gateway/Dockerfile
       target: development
-    command: pnpm run start:dev test
+    command: pnpm run start:dev http-gateway
+    env_file :
+      - ./apps/http-gateway/.env
     ports :
-      - '9000:9000'
-    environment:
-      - MONGODB_URI=mongodb://localhost:27017/auth
-  # books:
-  #   build:
-  #     context: .
-  #     dockerfile: ./apps/books/Dockerfile
-  #     target: development
-  #   command: pnpm run start:dev books
-  #   ports :
-  #     - '3000:3000'
-  #   env_file :
-  #     - ./apps/books/.env
-  #   volumes:
-  #     - .:/usr/src/app
-  # cart:
-  #   build:
-  #     context: .
-  #     dockerfile: ./apps/cart/Dockerfile
-  #     target: development
-  #   command: pnpm run start:dev cart
-  #   ports :
-  #     - '5000:5000'
-  #   env_file :
-  #     - ./apps/cart/.env
-  #   volumes:
-  #     - .:/usr/src/app
+      - '3000:3000'
+  books:
+    container_name: Books
+    build:
+      context: .
+      dockerfile: ./apps/books/Dockerfile
+      target: development
+    command: pnpm run start:dev books
+    ports :
+      - '8000:8000'
+    env_file :
+      - ./apps/books/.env
+    volumes:
+      - .:/usr/src/app
+  cart:
+    container_name: Cart
+    build:
+      context: .
+      dockerfile: ./apps/cart/Dockerfile
+      target: development
+    command: pnpm run start:dev cart
+    ports :
+      - '5000:5000'
+    env_file :
+      - ./apps/cart/.env
+    volumes:
+      - .:/usr/src/app
 
-  # rabbitmq1:
-  #   image: rabbitmq:3-management
-  #   container_name: 'rabbitmq1'
-  #   ports:
-  #       - 5672:5672
-  #       - 15672:15672
-  # redis:
-  #   image: redis:7.0-rc1-alpine3.15
-  #   restart: always
-  #   ports:
-  #     - 6379:6379
+  momgodb:
+    container_name: mongodb
+    image: mongo:latest
+    restart: always
+    ports:
+      - 27017:27017
+    environment:
+      MONGODB_DATABASE: bia2aroosi
+  rabbitmq:
+    hostname : rabbitmq
+    container_name: rabbitmq
+    image: rabbitmq:3-management
+    ports:
+        - 5672:5672
+        - 15672:15672
+  redis:
+    container_name: redis
+    image: redis:7.0-rc1-alpine3.15
+    restart: always
+    ports:
+      - 6379:6379
 
 
 

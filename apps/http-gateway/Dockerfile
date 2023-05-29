@@ -1,18 +1,16 @@
 # Development
 FROM node:alpine AS development
 
-RUN ls -la
-
 WORKDIR /app
 
 COPY package.json pnpm-lock.yaml ./
 
 RUN npm install -g pnpm 
 
-
 RUN  pnpm install 
 
 COPY . .
+# The . in COPY . . means that all the files and directories in the build context will be copied into the root of the container. 
 
 RUN npm run build
 
@@ -31,8 +29,8 @@ RUN npm install -g pnpm
 
 RUN  pnpm install --prod
     
-EXPOSE 4000
+# -- prod flag just for install  dependency and not dev dependency for example dont install the type on DevDependency
 
 COPY --from=development /usr/src/app/dist ./dist
 
-CMD ["node", "dist/apps/auth/main"]
+CMD ["node", "dist/apps/http-gateway/main"]

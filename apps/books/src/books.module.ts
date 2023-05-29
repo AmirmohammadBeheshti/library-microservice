@@ -44,9 +44,9 @@ import { MongooseModule } from '@nestjs/mongoose';
     GenreModule,
     CacheModule.register({
       isGlobal: true,
-      host: 6379,
+      port: 6379,
       ttl: 0,
-      port: +'127.0.0.1',
+      host: 'redis',
     }),
   ],
   controllers: [BooksController],

@@ -20,6 +20,7 @@ import {
 } from '@app/common';
 import { CartSerializer } from './cart.serializer';
 import { MessagePattern, Payload } from '@nestjs/microservices';
+import { Cart } from './schema/cart.schema';
 
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
@@ -61,11 +62,14 @@ export class CartController {
     });
   }
   @MessagePattern('bill')
-  async billCart(@Payload() info: { billCart: BillCartDto; user: IUserInfo }) {
+  async billCart(
+    @Payload() info: { billCart: BillCartDto; user: IUserInfo },
+  ): Promise<any> {
     const bill = await this.cartService.billCart(
       info.user?._id,
       info.billCart.cartId,
     );
-    return this.cartSerializer.serialize(bill);
+    return bill;
+    // return await this.cartSerializer.serialize(bill);
   }
 }

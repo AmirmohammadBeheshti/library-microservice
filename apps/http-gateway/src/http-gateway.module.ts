@@ -21,15 +21,15 @@ import { PassportModule } from '@nestjs/passport';
   imports: [
     ConfigModule,
     PassportModule,
-    JwtModule.registerAsync({
-      global: true,
-      useFactory: (configService: ConfigService) => ({
-        signOptions: { expiresIn: `${3600}s` },
-        secret:
-          '54SDDFS54FDF8ERER5ASDASEDWQ5QERTRTD2FG12W221RR5SRF54SF1GXsdf4q5erf6q',
-      }),
-      inject: [ConfigService],
-    }),
+    // JwtModule.registerAsync({
+    //   global: true,
+    //   useFactory: (configService: ConfigService) => ({
+    //     signOptions: { expiresIn: `${3600}s` },
+    //     secret:
+    //       '54SDDFS54FDF8ERER5ASDASEDWQ5QERTRTD2FG12W221RR5SRF54SF1GXsdf4q5erf6q',
+    //   }),
+    //   inject: [ConfigService],
+    // }),
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: './apps/cart/.env',
