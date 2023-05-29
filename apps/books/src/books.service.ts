@@ -5,7 +5,6 @@ import {
   NotFoundException,
   OnModuleInit,
 } from '@nestjs/common';
-import { CreateBookDto, FilterBookDto, UpdateBookDto } from './dto/request';
 import { BooksRepository } from './books.repository';
 import { GenreService } from './genre/genre.service';
 import { Genre } from './genre/schema/genre.schema';
@@ -16,7 +15,12 @@ import { RpcException } from '@nestjs/microservices';
 import { Cache } from 'cache-manager';
 import { TOP_BOOK } from './constants';
 import { Types } from 'mongoose';
-import { UserLevel } from '@app/common';
+import {
+  CreateBookDto,
+  FilterBookDto,
+  UpdateBookDto,
+  UserLevel,
+} from '@app/common';
 
 @Injectable()
 export class BooksService implements OnModuleInit {

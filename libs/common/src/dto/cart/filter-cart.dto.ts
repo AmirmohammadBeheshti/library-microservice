@@ -1,7 +1,7 @@
-import { PaginationDtoOptional } from '@app/common';
 import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
 import { IsBoolean, IsOptional } from 'class-validator';
+import { PaginationDtoOptional } from '../pagination.dto';
 
 export class FilterCartDto extends PaginationDtoOptional {
   @ApiProperty({

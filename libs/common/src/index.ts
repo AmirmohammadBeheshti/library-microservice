@@ -1,5 +1,3 @@
-import { from } from 'rxjs';
-
 export * from './database';
 export * from './decorators';
 export * from './types';

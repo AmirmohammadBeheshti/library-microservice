@@ -1,4 +1,3 @@
-import { IsOnlyDate, PaginationDtoOptional } from '@app/common';
 import { ApiProperty } from '@nestjs/swagger';
 import {
   IsNotEmpty,
@@ -9,6 +8,8 @@ import {
 } from 'class-validator';
 import { Transform, Type } from 'class-transformer';
 import * as dayjs from 'dayjs';
+import { PaginationDtoOptional } from '../pagination.dto';
+import { IsOnlyDate } from '@app/common/decorators';
 
 export class FilterBookDto extends PaginationDtoOptional {
   @ApiProperty({

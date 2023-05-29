@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { AddGenreDto, FilterGenreDto } from './dto/request';
 import { GenreRepository } from './genre.repository';
+import { AddGenreDto, FilterGenreDto } from '@app/common';
 
 @Injectable()
 export class GenreService {

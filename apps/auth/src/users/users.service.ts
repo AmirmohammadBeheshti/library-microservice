@@ -1,8 +1,8 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { RegisterDto } from './dto/request';
 import { hash, verify } from 'argon2';
 import { UserRepository } from './user.repository';
 import { User } from './schema/user.schema';
+import { RegisterDto } from '@app/common';
 
 @Injectable()
 export class UsersService {

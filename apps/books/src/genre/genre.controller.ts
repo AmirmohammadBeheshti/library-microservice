@@ -1,8 +1,7 @@
-import { JwtAuthGuard } from '@app/common';
+import { AddGenreDto, FilterGenreDto, JwtAuthGuard } from '@app/common';
 import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { GenreService } from './genre.service';
-import { AddGenreDto, FilterGenreDto } from './dto/request';
 import { GenreSerializer } from './genre.serializer';
 
 @ApiTags('genre')

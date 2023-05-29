@@ -6,11 +6,10 @@ import {
 } from '@nestjs/common';
 import { CartRepository } from './cart.repository';
 import { ClientProxy } from '@nestjs/microservices';
-import { BOOKS_SERVICE, IPaginationOptions } from '@app/common';
+import { BOOKS_SERVICE, FilterCartDto, IPaginationOptions } from '@app/common';
 import { Types } from 'mongoose';
 import { lastValueFrom } from 'rxjs';
 import { error } from 'console';
-import { FilterCartDto } from './dto/request';
 
 @Injectable()
 export class CartService {

@@ -1,7 +1,7 @@
 # Development
 FROM node:alpine AS development
 
-WORKDIR /usr/src/app
+WORKDIR /app
 
 COPY package.json pnpm-lock.yaml ./
 
@@ -12,7 +12,7 @@ RUN  pnpm install
 COPY . .
 # The . in COPY . . means that all the files and directories in the build context will be copied into the root of the container. 
 
-RUN pnpm run build
+RUN npm run build
 
 # Production
 FROM node:alpine AS production

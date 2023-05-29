@@ -13,8 +13,14 @@ import {
 } from '@nestjs/common';
 import { BooksService } from './books.service';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { CurrentUser, JwtAuthGuard, ValidateMongoId } from '@app/common';
-import { CreateBookDto, FilterBookDto, UpdateBookDto } from './dto/request';
+import {
+  CreateBookDto,
+  CurrentUser,
+  FilterBookDto,
+  JwtAuthGuard,
+  UpdateBookDto,
+  ValidateMongoId,
+} from '@app/common';
 import { BooksSerializer } from './books.serializer';
 import { EventPattern, MessagePattern, Payload } from '@nestjs/microservices';
 import { User } from 'apps/auth/src/users/schema/user.schema';
@@ -27,39 +33,36 @@ export class BooksController {
     private readonly booksService: BooksService,
     private readonly booksSerializer: BooksSerializer,
   ) {}
-  @UseGuards(JwtAuthGuard)
-  @Post()
-  async createBook(@Body() createBook: CreateBookDto) {
-    console.log('run');
+  @MessagePattern('create-book')
+  async createBook(@Payload() createBook: CreateBookDto) {
     const create = await this.booksService.createBook(createBook);
     return this.booksSerializer.serialize(create);
   }
-  @UseGuards(JwtAuthGuard)
-  @Put(':id')
-  async updateBook(
-    @Body() updateBook: UpdateBookDto,
-    @Param('id', ValidateMongoId) id: string,
-  ) {
-    const update = await this.booksService.updateBook(id, updateBook);
+  @MessagePattern('update-book')
+  async updateBook(@Payload() updateVal: { UpdateBookDto; id: string }) {
+    const update = await this.booksService.updateBook(
+      updateVal.id,
+      updateVal.UpdateBookDto.updateBook,
+    );
     return this.booksSerializer.serialize(update);
   }
-  @UseGuards(JwtAuthGuard)
-  @Delete(':id')
-  async deleteBook(@Param('id', ValidateMongoId) id: string) {
+  @MessagePattern('delete-book')
+  async deleteBook(@Payload() id: string) {
     return await this.booksService.deleteBook(id);
   }
-  @UseGuards(JwtAuthGuard)
-  @Get()
+  @MessagePattern('filter-books')
   async filterBooks(
-    @Query() filterBook: FilterBookDto,
+    @Payload() val: { filterBook: FilterBookDto; user: User },
     @CurrentUser() user: User,
   ) {
-    const filter = await this.booksService.filter(filterBook, user.level);
+    const filter = await this.booksService.filter(
+      val.filterBook,
+      val.user.level,
+    );
     return this.booksSerializer.serializePaginated(filter);
   }
-  @UseGuards(JwtAuthGuard)
-  @Get(':id')
-  async findOneBook(@Param('id', ValidateMongoId) id: string) {
+  @MessagePattern('find-one-book')
+  async findOneBook(@Payload() id: string) {
     const findOne = await this.booksService.findBookById(id);
     return this.booksSerializer.serialize(findOne);
   }
