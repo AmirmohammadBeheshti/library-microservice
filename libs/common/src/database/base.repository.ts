@@ -18,6 +18,7 @@ import {
 import { UpdatedModel } from './repository.entity';
 import { IPaginationOptions } from './repository.interface';
 import { IErrMsgRepository, Pagination } from './repository.type';
+import { RpcException } from '@nestjs/microservices';
 
 export abstract class BaseMongooseRepository<TEntity extends Document> {
   constructor(
@@ -35,23 +36,23 @@ export abstract class BaseMongooseRepository<TEntity extends Document> {
       Object.keys(error.errors).forEach((item) => {
         errorObj.push(error.errors[item].message);
       });
-      throw new NotAcceptableException(errorObj);
+      throw new RpcException({ statusCode: 400, message: errorObj });
     }
     switch (error.code) {
       case 11000:
-        console.log(error.message || this.errMsg.duplicateErr);
-        throw new BadRequestException(
-          error.message || this.errMsg.duplicateErr,
-        );
+        throw new RpcException({
+          statusCode: 400,
+          message: error.message || this.errMsg.duplicateErr,
+        });
 
       default:
-        throw new BadRequestException('عملیات با خطا مواجه شد');
+        throw new RpcException('عملیات با خطا مواجه شد');
     }
   }
 
   async create(data: unknown, saveOptions?: SaveOptions): Promise<TEntity> {
     if (!data) {
-      throw new Error(`${this.model.name} is empty!`);
+      throw new RpcException(`${this.model.name} is empty!`);
     }
     try {
       return await new this.model(data).save(saveOptions);
@@ -62,7 +63,7 @@ export abstract class BaseMongooseRepository<TEntity extends Document> {
 
   async insertMany(data: unknown[], saveOptions?: InsertManyOptions) {
     if (!data) {
-      throw new Error(`${this.model.name} is empty!`);
+      throw new RpcException(`${this.model.name} is empty!`);
     }
     try {
       return await this.model.insertMany(data, saveOptions);
@@ -121,7 +122,10 @@ export abstract class BaseMongooseRepository<TEntity extends Document> {
   ): Promise<TEntity> {
     const entity = await this.findOne(filter, projection, options);
     if (!entity)
-      throw new NotFoundException(this.errMsg.notFoundError ?? 'یافت نشد');
+      throw new RpcException({
+        statusCode: 404,
+        message: this.errMsg.notFoundError ?? 'یافت نشد',
+      });
 
     return entity;
   }
@@ -338,7 +342,7 @@ export abstract class BaseMongooseRepository<TEntity extends Document> {
       })
       .exec();
     if (!entity.modifiedCount)
-      throw new NotFoundException(this.errMsg.notFoundError ?? 'یافت نشد');
+      throw new RpcException(this.errMsg.notFoundError ?? 'یافت نشد');
     return entity;
   }
 
@@ -349,14 +353,14 @@ export abstract class BaseMongooseRepository<TEntity extends Document> {
   ): Promise<TEntity> {
     const entity = await this.findOneAndUpdate(filter, updated, options);
     if (!entity)
-      throw new NotFoundException(this.errMsg.notFoundError ?? 'یافت نشد');
+      throw new RpcException(this.errMsg.notFoundError ?? 'یافت نشد');
     return entity;
   }
 
   async removeOrFailed(filter: FilterQuery<TEntity>): Promise<boolean> {
     const deletedItem = await this.remove(filter);
     if (!deletedItem)
-      throw new NotFoundException(this.errMsg.notFoundError ?? 'یافت نشد');
+      throw new RpcException(this.errMsg.notFoundError ?? 'یافت نشد');
     return deletedItem;
   }
 
@@ -369,7 +373,7 @@ export abstract class BaseMongooseRepository<TEntity extends Document> {
       new: true,
     });
     if (!deletedItem)
-      throw new NotFoundException(this.errMsg.notFoundError ?? 'یافت نشد');
+      throw new RpcException(this.errMsg.notFoundError ?? 'یافت نشد');
     return deletedItem;
   }
 }

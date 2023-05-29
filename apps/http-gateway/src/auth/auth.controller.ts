@@ -1,17 +1,27 @@
 import {
+  AUTH_SERVICE,
   CurrentUser,
   LocalAuthGuard,
   LoginDto,
   RegisterDto,
 } from '@app/common';
-import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Inject,
+  Post,
+  UnauthorizedException,
+  UseGuards,
+} from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
+import { ApiTags } from '@nestjs/swagger';
 import { User } from 'apps/auth/src/users/schema/user.schema';
 import { lastValueFrom } from 'rxjs';
 
+@ApiTags('Authentication')
 @Controller('Auth')
 export class AuthController {
-  constructor(private readonly auth: ClientProxy) {}
+  constructor(@Inject(AUTH_SERVICE) private readonly auth: ClientProxy) {}
 
   @Post('register')
   async register(@Body() registerDto: RegisterDto) {
@@ -19,7 +29,12 @@ export class AuthController {
   }
   @UseGuards(LocalAuthGuard)
   @Post('login')
-  async login(@CurrentUser('id') user: User) {
-    return await lastValueFrom(this.auth.send('login', registerDto));
+  async login(@CurrentUser('id') user: User, @Body() loginDto: LoginDto) {
+    try {
+      console.log('a');
+      return await lastValueFrom(this.auth.send('login', loginDto));
+    } catch (e) {
+      throw new UnauthorizedException();
+    }
   }
 }

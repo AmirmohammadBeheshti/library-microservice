@@ -44,9 +44,10 @@ export class BooksService implements OnModuleInit {
   }
 
   async updateBook(bookId: string, updateBook: UpdateBookDto) {
+    console.log(updateBook);
     await this.findBookById(bookId);
     const genre =
-      updateBook.genre && (await this.validateGenre(updateBook.genre));
+      updateBook.genre && (await this.validateGenre(updateBook?.genre));
     return await this.bookRepo.findOneAndUpdate(
       { _id: bookId },
       {
@@ -72,7 +73,7 @@ export class BooksService implements OnModuleInit {
       isPremium: userLevel === UserLevel.PREMIUM ? undefined : false,
       price,
       publicationDate,
-      author,
+      author: author && { $regex: author },
     });
   }
 
@@ -98,7 +99,10 @@ export class BooksService implements OnModuleInit {
     if (book) return book;
     book = await this.bookRepo.findOne({ _id: id, isDeleted: false });
     if (!book) {
-      throw new RpcException('کتاب مورد نظر یافت نشد');
+      throw new RpcException({
+        statusCode: 404,
+        message: 'کتاب مورد نظر یافت نشد',
+      });
     }
     return book;
   }
@@ -108,14 +112,21 @@ export class BooksService implements OnModuleInit {
     return this.bookRepo.remove({ _id: bookId });
   }
   private fillGenreInfo(genre: Genre): GenreData {
-    return {
-      id: genre._id.toString(),
-      name: genre.name,
-    };
+    if (genre)
+      return {
+        id: genre._id.toString(),
+        name: genre.name,
+      };
   }
   private async validateGenre(genreId: string): Promise<Genre> {
     const findGenre = await this.genreService.findGenreById(genreId);
-    if (!findGenre) throw new NotFoundException('ژانر مورد نظر پیدا نشد');
+
+    if (!findGenre) {
+      throw new RpcException({
+        statusCode: 404,
+        message: 'ژانر مورد نظر پیدا نشد',
+      });
+    }
     return findGenre;
   }
 

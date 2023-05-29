@@ -16,8 +16,10 @@ import {
   FilterCartDto,
   AddCartDto,
   BillCartDto,
+  RemoveCartDto,
 } from '@app/common';
 import { CartSerializer } from './cart.serializer';
+import { MessagePattern, Payload } from '@nestjs/microservices';
 
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
@@ -29,41 +31,41 @@ export class CartController {
     private readonly cartSerializer: CartSerializer,
   ) {}
 
-  @Get()
+  @MessagePattern('find-items')
   async findItems(
-    @CurrentUser() user: IUserInfo,
-    @Query() filterCart: FilterCartDto,
+    @Payload() info: { filterCart: FilterCartDto; user: IUserInfo },
   ) {
-    const items = await this.cartService.filterCart(user._id, filterCart);
+    const items = await this.cartService.filterCart(
+      info.user._id,
+      info.filterCart,
+    );
     return this.cartSerializer.serializePaginated(items);
   }
 
-  @Post('add-item')
+  @MessagePattern('add-item')
   async addItemToCart(
-    @Body() addCart: AddCartDto,
-    @CurrentUser() user: IUserInfo,
+    @Payload() info: { addCart: AddCartDto; user: IUserInfo },
   ) {
     return await this.cartService.addCart({
-      userId: user?._id,
-      bookId: addCart.bookId,
+      userId: info.user?._id,
+      bookId: info.addCart.bookId,
     });
   }
-  @Delete('remove-item')
+  @MessagePattern('remove-item')
   async removeItem(
-    @Body() addCart: AddCartDto,
-    @CurrentUser() user: IUserInfo,
+    @Payload() info: { removeCart: RemoveCartDto; user: IUserInfo },
   ) {
     return await this.cartService.removeFromCart({
-      userId: user?._id,
-      bookId: addCart.bookId,
+      userId: info.user?._id,
+      bookId: info.removeCart.bookId,
     });
   }
-  @Post('bill')
-  async billCart(
-    @Body() billCart: BillCartDto,
-    @CurrentUser() user: IUserInfo,
-  ) {
-    const bill = await this.cartService.billCart(user?._id, billCart.cartId);
+  @MessagePattern('bill')
+  async billCart(@Payload() info: { billCart: BillCartDto; user: IUserInfo }) {
+    const bill = await this.cartService.billCart(
+      info.user?._id,
+      info.billCart.cartId,
+    );
     return this.cartSerializer.serialize(bill);
   }
 }

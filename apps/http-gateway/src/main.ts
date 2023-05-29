@@ -1,9 +1,12 @@
 import { NestFactory } from '@nestjs/core';
 import { HttpGatewayModule } from './http-gateway.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.create(HttpGatewayModule);
+  app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
+
   const config = new DocumentBuilder()
     .setTitle('auth')
     .setDescription('Library Document API')

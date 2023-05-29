@@ -2,7 +2,7 @@ import { Strategy } from 'passport-local';
 import { PassportStrategy } from '@nestjs/passport';
 import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 import { AUTH_SERVICE } from '../constants';
-import { ClientProxy } from '@nestjs/microservices';
+import { ClientProxy, RpcException } from '@nestjs/microservices';
 import { lastValueFrom } from 'rxjs';
 
 @Injectable()
@@ -20,8 +20,13 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
         username,
       }),
     );
+    console.log('asdsa', { username, password });
+
     if (!user) {
-      throw new UnauthorizedException('Invalid username or password!');
+      throw new RpcException({
+        statusCode: 401,
+        message: 'Invalid username or password!',
+      });
     }
     return user;
   }

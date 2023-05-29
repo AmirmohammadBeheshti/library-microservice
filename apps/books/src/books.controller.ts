@@ -39,10 +39,12 @@ export class BooksController {
     return this.booksSerializer.serialize(create);
   }
   @MessagePattern('update-book')
-  async updateBook(@Payload() updateVal: { UpdateBookDto; id: string }) {
+  async updateBook(
+    @Payload() updateVal: { updateBook: UpdateBookDto; id: string },
+  ) {
     const update = await this.booksService.updateBook(
       updateVal.id,
-      updateVal.UpdateBookDto.updateBook,
+      updateVal.updateBook,
     );
     return this.booksSerializer.serialize(update);
   }

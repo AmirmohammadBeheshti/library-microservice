@@ -1,4 +1,5 @@
 import {
+  BOOKS_SERVICE,
   CreateBookDto,
   CurrentUser,
   FilterBookDto,
@@ -11,6 +12,7 @@ import {
   Controller,
   Delete,
   Get,
+  Inject,
   Param,
   Post,
   Put,
@@ -18,7 +20,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { User } from 'apps/auth/src/users/schema/user.schema';
 import { lastValueFrom } from 'rxjs';
 
@@ -26,7 +28,9 @@ import { lastValueFrom } from 'rxjs';
 @ApiTags('Books')
 @Controller('books')
 export class BooksController {
-  constructor(private readonly booksClient: ClientProxy) {}
+  constructor(
+    @Inject(BOOKS_SERVICE) private readonly booksClient: ClientProxy,
+  ) {}
 
   @UseGuards(JwtAuthGuard)
   @Post()

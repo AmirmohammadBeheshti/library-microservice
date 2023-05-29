@@ -3,6 +3,7 @@ import { PassportStrategy } from '@nestjs/passport';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import { ConfigService } from '@nestjs/config';
+import { RpcException } from '@nestjs/microservices';
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(
@@ -28,7 +29,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     const user = await this.userService.getOneById(payload.id);
     console.log('user', user);
     if (!user) {
-      throw new UnauthorizedException();
+      throw new RpcException({ statusCode: 401 });
     }
     return user;
   }
