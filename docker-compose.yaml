@@ -52,7 +52,6 @@ services:
       - 27017:27017
     volumes:
       - "./db/data/db-files:/data/db"
-      - "./db/init/:/docker-entrypoint-initdb.d/"
   rabbitmq:
     hostname : rabbitmq
     container_name: rabbitmq
