@@ -21,26 +21,9 @@ import { MongooseModule } from '@nestjs/mongoose';
       envFilePath: './apps/books/.env',
       validationSchema: joi.object({
         MONGODB_URI: joi.string().required(),
-        AUTH_HOST: joi.string().required(),
-        AUTH_PORT: joi.number().required(),
-        REDIS_HOST: joi.string().required(),
-        REDIS_PORT: joi.string().required(),
         RMQ_URL: joi.string().required(),
       }),
     }),
-    ClientsModule.registerAsync([
-      {
-        name: AUTH_SERVICE,
-        useFactory: (configService: ConfigService) => ({
-          transport: Transport.TCP,
-          options: {
-            host: configService.get('AUTH_HOST'),
-            port: configService.get('AUTH_PORT'),
-          },
-        }),
-        inject: [ConfigService],
-      },
-    ]),
     GenreModule,
     CacheModule.register({
       isGlobal: true,

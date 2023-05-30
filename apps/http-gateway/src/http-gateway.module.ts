@@ -34,8 +34,6 @@ import { PassportModule } from '@nestjs/passport';
       isGlobal: true,
       envFilePath: './apps/cart/.env',
       validationSchema: joi.object({
-        AUTH_HOST: joi.string().required(),
-        AUTH_PORT: joi.number().required(),
         RMQ_URL: joi.string().required(),
       }),
     }),
@@ -75,10 +73,15 @@ import { PassportModule } from '@nestjs/passport';
       {
         name: AUTH_SERVICE,
         useFactory: (configService: ConfigService) => ({
-          transport: Transport.TCP,
+          transport: Transport.RMQ,
           options: {
-            host: configService.get('AUTH_HOST'),
-            port: configService.get('AUTH_PORT'),
+            urls: [configService.get('RMQ_URL').toString()],
+            queue: AUTH_SERVICE,
+            queueOptions: {
+              durable: false,
+            },
+            noAck: false,
+            persistent: true,
           },
         }),
         inject: [ConfigService],

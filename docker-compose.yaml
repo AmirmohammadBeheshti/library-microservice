@@ -9,17 +9,6 @@ services:
     command: pnpm run start:dev auth
     ports :
       - '4000:4000'
-  http-gateway:
-    container_name: Http-Gateway
-    build:
-      context: .
-      dockerfile: ./apps/http-gateway/Dockerfile
-      target: development
-    command: pnpm run start:dev http-gateway
-    env_file :
-      - ./apps/http-gateway/.env
-    ports :
-      - '3000:3000'
   books:
     container_name: Books
     build:
@@ -31,8 +20,6 @@ services:
       - '8000:8000'
     env_file :
       - ./apps/books/.env
-    volumes:
-      - .:/usr/src/app
   cart:
     container_name: Cart
     build:
@@ -44,8 +31,18 @@ services:
       - '5000:5000'
     env_file :
       - ./apps/cart/.env
-    volumes:
-      - .:/usr/src/app
+
+  http-gateway:
+    container_name: Http-Gateway
+    build:
+      context: .
+      dockerfile: ./apps/http-gateway/Dockerfile
+      target: development
+    command: pnpm run start:dev http-gateway
+    env_file :
+      - ./apps/http-gateway/.env
+    ports :
+      - '3000:3000'
 
   momgodb:
     container_name: mongodb
@@ -53,8 +50,9 @@ services:
     restart: always
     ports:
       - 27017:27017
-    environment:
-      MONGODB_DATABASE: bia2aroosi
+    volumes:
+      - "./db/data/db-files:/data/db"
+      - "./db/init/:/docker-entrypoint-initdb.d/"
   rabbitmq:
     hostname : rabbitmq
     container_name: rabbitmq
@@ -68,6 +66,9 @@ services:
     restart: always
     ports:
       - 6379:6379
+
+volumes:
+  mongodb:
 
 
 

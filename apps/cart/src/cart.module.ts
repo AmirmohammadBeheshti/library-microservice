@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { CartController } from './cart.controller';
 import { CartService } from './cart.service';
-import { AUTH_SERVICE, BOOKS_SERVICE, DatabaseModule } from '@app/common';
+import { BOOKS_SERVICE, DatabaseModule } from '@app/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import * as joi from 'joi';
@@ -9,7 +9,6 @@ import { CartSerializer } from './cart.serializer';
 import { CartRepository } from './cart.repository';
 import { Cart, CartSchema } from './schema/cart.schema';
 import { MongooseModule } from '@nestjs/mongoose';
-import { config } from 'process';
 @Module({
   imports: [
     DatabaseModule,
@@ -19,8 +18,6 @@ import { config } from 'process';
       envFilePath: './apps/cart/.env',
       validationSchema: joi.object({
         MONGODB_URI: joi.string().required(),
-        AUTH_HOST: joi.string().required(),
-        AUTH_PORT: joi.number().required(),
         RMQ_URL: joi.string().required(),
       }),
     }),
@@ -37,17 +34,6 @@ import { config } from 'process';
             },
             noAck: false,
             persistent: true,
-          },
-        }),
-        inject: [ConfigService],
-      },
-      {
-        name: AUTH_SERVICE,
-        useFactory: (configService: ConfigService) => ({
-          transport: Transport.TCP,
-          options: {
-            host: configService.get('AUTH_HOST'),
-            port: configService.get('AUTH_PORT'),
           },
         }),
         inject: [ConfigService],

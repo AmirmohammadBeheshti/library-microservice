@@ -44,7 +44,6 @@ export class BooksService implements OnModuleInit {
   }
 
   async updateBook(bookId: string, updateBook: UpdateBookDto) {
-    console.log(updateBook);
     await this.findBookById(bookId);
     const genre =
       updateBook.genre && (await this.validateGenre(updateBook?.genre));
@@ -65,7 +64,6 @@ export class BooksService implements OnModuleInit {
   public async filter(filterBooks: FilterBookDto, userLevel: UserLevel) {
     const { take, page, author, genre, price, publicationDate, title } =
       filterBooks;
-    console.log(userLevel !== UserLevel.PREMIUM);
     const pagination: IPaginationOptions = { take, page };
     return await this.bookRepo.findAndPaginate(pagination, {
       title: title && { $regex: title },

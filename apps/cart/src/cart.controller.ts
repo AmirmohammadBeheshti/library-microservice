@@ -23,7 +23,6 @@ import { MessagePattern, Payload } from '@nestjs/microservices';
 import { Cart } from './schema/cart.schema';
 
 @ApiBearerAuth()
-@UseGuards(JwtAuthGuard)
 @ApiTags('Cart')
 @Controller('cart')
 export class CartController {
@@ -69,7 +68,6 @@ export class CartController {
       info.user?._id,
       info.billCart.cartId,
     );
-    return bill;
-    // return await this.cartSerializer.serialize(bill);
+    return await this.cartSerializer.serialize(bill);
   }
 }

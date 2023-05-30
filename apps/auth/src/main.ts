@@ -3,6 +3,7 @@ import { AuthModule } from './auth.module';
 import { Transport } from '@nestjs/microservices';
 import { ConfigService } from '@nestjs/config';
 import { ValidationPipe } from '@nestjs/common';
+import { AUTH_SERVICE } from '@app/common';
 
 async function bootstrap() {
   const app = await NestFactory.create(AuthModule);
@@ -10,8 +11,14 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
 
   app.connectMicroservice({
-    transport: Transport.TCP,
-    options: { host: '0.0.0.0', port: 1000 },
+    transport: Transport.RMQ,
+    options: {
+      urls: [configService.get('RMQ_URL')],
+      queue: AUTH_SERVICE,
+      queueOptions: {
+        durable: false,
+      },
+    },
   });
 
   await app.startAllMicroservices();

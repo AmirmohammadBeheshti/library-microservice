@@ -21,7 +21,6 @@ export class UsersController {
   }
   @MessagePattern('validateUser')
   async validateUser(@Payload() val: { password: string; username: string }) {
-    console.log('val', val);
     return await this.userService.validateUser(val.password, val.username);
   }
 }

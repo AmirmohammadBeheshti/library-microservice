@@ -32,8 +32,7 @@ export class AuthController {
   @Post('login')
   async login(@CurrentUser('id') user: User, @Body() loginDto: LoginDto) {
     try {
-      console.log('a');
-      return await lastValueFrom(this.auth.send('login', loginDto));
+      return await lastValueFrom(this.auth.send('login', { user, loginDto }));
     } catch (e) {
       throw new UnauthorizedException();
     }

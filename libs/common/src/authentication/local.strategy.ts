@@ -20,8 +20,6 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
         username,
       }),
     );
-    console.log('asdsa', { username, password });
-
     if (!user) {
       throw new RpcException({
         statusCode: 401,

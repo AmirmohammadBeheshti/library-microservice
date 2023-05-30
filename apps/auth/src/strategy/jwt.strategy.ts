@@ -27,7 +27,6 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 
   async validate(payload: any) {
     const user = await this.userService.getOneById(payload.id);
-    console.log('user', user);
     if (!user) {
       throw new RpcException({ statusCode: 401 });
     }

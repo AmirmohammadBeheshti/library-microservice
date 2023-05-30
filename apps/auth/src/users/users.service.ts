@@ -17,7 +17,6 @@ export class UsersService {
     return await this.userRepo.findOneOrFailed({ id });
   }
   async getOneByUsername(username: string) {
-    console.log('username', username);
     if (username) {
       return await this.userRepo.findOneOrFailed({ username });
     }
@@ -28,9 +27,7 @@ export class UsersService {
   }
 
   async validateUser(password: string, username: string) {
-    console.log('Run A', { password, username });
     const findUser = await this.getOneByUsername(username);
-    console.log('Run b', findUser);
     if (!findUser)
       throw new RpcException({
         statusCode: 401,

@@ -39,7 +39,6 @@ export class CartService {
     let bookInfo;
     try {
       bookInfo = await lastValueFrom(this.client.send('book-info', bookId));
-      console.log(bookInfo);
     } catch (e) {
       throw new RpcException({
         statusCode: 400,
@@ -103,6 +102,10 @@ export class CartService {
         message: 'این صورتحساب پرداخت شده است',
       });
     }
+    return await this.cartRepo.findOneAndUpdate(
+      { _id: cartId },
+      { isPaid: true },
+    );
   }
   private validateMongoId(value: string) {
     if (Types.ObjectId.isValid(value)) {
