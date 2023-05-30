@@ -30,9 +30,20 @@ export class CartService {
     });
     if (!findItemOnCart)
       throw new RpcException({
-        statusCode: 400,
+        statusCode: 404,
         message: 'این محصول در سبد خرید شما وجود ندارد',
       });
+
+    await this.cartRepo.updateOne(
+      {
+        _id: findItemOnCart._id,
+      },
+      {
+        $pull: { products: { id: info.bookId } },
+      },
+    );
+    this.client.emit('decrease-sale-amount', bookId);
+    return true;
   }
   async addCart(info: { userId: string; bookId: string }) {
     const bookId = this.validateMongoId(info.bookId);
@@ -51,6 +62,7 @@ export class CartService {
       userId: info.userId,
       isPaid: false,
     });
+    console.log(findOpenCart);
     if (findOpenCart) {
       if (
         findOpenCart.products.find((val) => val.id?.toString() === info.bookId)
@@ -60,6 +72,14 @@ export class CartService {
           message: 'این محصول در سبد خرید شما وجود دارد',
         });
       }
+      this.cartRepo.updateOne(
+        { _id: findOpenCart._id },
+        {
+          $push: {
+            products: this.generateBookInfo(bookInfo),
+          },
+        },
+      );
     } else {
       await this.cartRepo.create({
         userId: info.userId,
@@ -82,15 +102,16 @@ export class CartService {
     };
   }
   async billCart(userId: string, cartId: string) {
-    const cartInfo = await this.cartRepo.findOne({ id: cartId });
+    const cartInfo = await this.cartRepo.findOne({ _id: cartId });
 
-    if (cartInfo) {
+    if (!cartInfo) {
       throw new RpcException({
         statusCode: 404,
         message: 'صورتحساب مورد نظر یافت نشد',
       });
     }
-    if (cartInfo.userId !== userId) {
+
+    if (cartInfo?.userId !== userId) {
       throw new RpcException({
         statusCode: 400,
         message: 'این صورتحساب متعلق به شما نیست',
@@ -100,6 +121,12 @@ export class CartService {
       throw new RpcException({
         statusCode: 400,
         message: 'این صورتحساب پرداخت شده است',
+      });
+    }
+    if (!Array.isArray(cartInfo.products) || !cartInfo?.products?.length) {
+      throw new RpcException({
+        statusCode: 400,
+        message: 'سبد خرید خالی است',
       });
     }
     return await this.cartRepo.findOneAndUpdate(

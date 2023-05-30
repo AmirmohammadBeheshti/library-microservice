@@ -55,18 +55,18 @@ export class CartController {
   async removeItem(
     @Payload() info: { removeCart: RemoveCartDto; user: IUserInfo },
   ) {
+    console.log('return ');
     return await this.cartService.removeFromCart({
-      userId: info.user?._id,
-      bookId: info.removeCart.bookId,
+      userId: info?.user?._id,
+      bookId: info?.removeCart?.bookId,
     });
   }
   @MessagePattern('bill')
-  async billCart(
-    @Payload() info: { billCart: BillCartDto; user: IUserInfo },
-  ): Promise<any> {
+  async billCart(@Payload() info: { billCart: BillCartDto; user: IUserInfo }) {
+    console.log('a', info?.user?._id);
     const bill = await this.cartService.billCart(
-      info.user?._id,
-      info.billCart.cartId,
+      info?.user?._id,
+      info?.billCart?.cartId,
     );
     return await this.cartSerializer.serialize(bill);
   }

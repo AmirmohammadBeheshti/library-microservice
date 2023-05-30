@@ -41,7 +41,6 @@ export abstract class BaseMongooseRepository<TEntity extends Document> {
     switch (error.code) {
       case 11000:
         throw new RpcException({
-          statusCode: 400,
           message: error.message || this.errMsg.duplicateErr,
         });
 
@@ -123,7 +122,6 @@ export abstract class BaseMongooseRepository<TEntity extends Document> {
     const entity = await this.findOne(filter, projection, options);
     if (!entity)
       throw new RpcException({
-        statusCode: 404,
         message: this.errMsg.notFoundError ?? 'یافت نشد',
       });
 

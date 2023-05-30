@@ -9,6 +9,7 @@ import {
   RemoveCartDto,
 } from '@app/common';
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -20,6 +21,7 @@ import {
 } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { lastValueFrom } from 'rxjs';
 
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
@@ -32,7 +34,31 @@ export class CartController {
     @CurrentUser() user: IUserInfo,
     @Query() filterCart: FilterCartDto,
   ) {
-    return await this.cartClient.send('find-items', { user, filterCart });
+    return await lastValueFrom(
+      this.cartClient.send('find-items', { user, filterCart }),
+    );
+  }
+
+  @Delete('remove-item')
+  async removeItem(
+    @Body() removeCart: RemoveCartDto,
+    @CurrentUser() user: IUserInfo,
+  ) {
+    return lastValueFrom(
+      await this.cartClient.send('remove-item', {
+        removeCart: removeCart,
+        user,
+      }),
+    );
+  }
+  @Post('bill')
+  async billCart(
+    @Body() billCart: BillCartDto,
+    @CurrentUser() user: IUserInfo,
+  ) {
+    return await lastValueFrom(
+      this.cartClient.send('bill', { billCart, user }),
+    );
   }
 
   @Post('add-item')
@@ -40,20 +66,8 @@ export class CartController {
     @Body() addCart: AddCartDto,
     @CurrentUser() user: IUserInfo,
   ) {
-    return await this.cartClient.send('add-item', { addCart, user });
-  }
-  @Delete('remove-item')
-  async removeItem(
-    @Body() removeCart: RemoveCartDto,
-    @CurrentUser() user: IUserInfo,
-  ) {
-    return await this.cartClient.send('remove-item', { removeCart, user });
-  }
-  @Post('bill')
-  async billCart(
-    @Body() billCart: BillCartDto,
-    @CurrentUser() user: IUserInfo,
-  ) {
-    return await this.cartClient.send('bill', { billCart, user });
+    return await lastValueFrom(
+      this.cartClient.send('add-item', { addCart, user }),
+    );
   }
 }
