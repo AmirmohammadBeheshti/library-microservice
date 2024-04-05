@@ -2,55 +2,24 @@
   <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
 </p>
 
-# تکنولوژی های مورد استفاده 
-* Docker 
-* Redis 
-* RabbitMQ
-* Mongo
-* Mongoose 
+## Technologies Used
+- Docker
+- Redis
+- RabbitMQ
+- MongoDB
+- Mongoose
 
+## Architecture
+The architecture of this project is microservices-based, consisting of three services: Authentication, Books, Cart, and an HTTP Gateway.
 
-# معماری 
-معماری این پروژه مایکروسرویس است که از سه سرویس ``Authentication`` و  ``Books`` و ``Cart`` و ``Http Gateway`` تشکیل شده است   
-## Authentication Service 
-این سرویس مربوط به مدیریت کاربران است . با استفاده از این سرویس کاربران میتوانند مراحل ``Register``  و ``Login`` را انجام دهند و با استفاده از توکنی که دریافت میکنند احراز هویت خود را برای دسترسی های سایت انجام دهند           
-هر کاربر میتواند در سایت اشتراک ``Premium`` داشته باشد که میتواند فهرست کتاب هایی که اشتراک ``Premium`` لازم دارد را مشاهده کند
-## Books Service 
-``این سرویس برای مدیریت کتاب های مجموعه است  ``         
-   با استفاده از این سرویس میتوانیم ژانر های مختلف مربوط به کتاب را تعریف کنیم و برای تعریف کتاب از آیدی  ژانر ها استفاده کنیم تا بتوانیم اطلاعات مربوطه به ژانر را دریافت کنیم    
-هر کتاب شامل 
-``نام کتاب``
- , 
- ``نام نویسنده ``
- ,
- ``اطلاعات ژانر مربوطه ``
- ,
-`` تاریخ نشر``
-,
-``توضیحات`` 
-است      
-میتوانیم هر کتاب را با خصوصیات بالا تعریف کنیم و علاوه بر فیلد های بالا میتوانیم از فیلد ``isPremium`` استفاده کنیم . زمانی که مقدار این فیلد برابر با ``true`` باشد به این معناست که کتاب را فقط کسانی دسترسی دارند که در سایت اشتراک premium دارند
-## Cart Service 
-این سرویس مربوط به سبد خرید مجموعه است که کاربر میتوانند کتاب های موجود را به سبد خرید خود اضافه کند . روند کار سبد خرید به این صورت است که هر کاربر میتواند چندین سبد خرید داشته باشد ولی فقط میتواند یک سبد خرید باز داشته باشد و تشخیص اینکه سبد خرید هنوز باز است یا خیر از طریق فیلد ``isPaid`` انجام میشود        
-زمانی که کاربر سبد خرید خود را پرداخت کند سبد خرید به پرداخت تغییر پیدا میکند و برای سفارش جدید باید سبد خرید جدیدی باز کند          
-## Http Gateway Service 
-همه سرویس های پروژه را در این سرویس اضافه میکنیم و``Routing`` پروژه را در این قسمت انجام میدهیم تا 
-##  الگوریتم سبد خرید
-زمانی که کاربر محصولی را به سبد خرید اضافه میکند چک میشود که اگر این سبد خرید باز داشت و این محصول در سبد خرید نبود آن را اضافه میکند و اگر سبد خرید بازی وجود نداشت سبد خرید جدیدی باز میکند و کاربر میتواند محصولات موجود در سبد خرید را مشاهده کند و آن را از سبد خرید خود حذف کند 
-الگوریتم سبد خرید به این صورت است که کاربر باید فقط یک سبد خرید باز داشته باشد ولی میتوانند چندین سبد خرید داشته باشد 
-## الگوریتم محبوب ترین کتاب ها
-الگوریتم محبوب ترین کتاب ها به این صورت کار میکند که زمانی که کتابی را به سبد خرید اضافه میکنیم فیلد ``salesAmount`` یک عدد اضافه میشود به این منظور که این محصول خریداری شده است و زمانی که محصولی را از سبد خرید کم میکنیم یک عدد از ``salesAmount`` کم میکنیم 
-برای تشخیص کتاب های محبوب ده کتابی را که بیشترین مقدار ``salesAmount`` را دارند را پیدا کرده و در ``Redis`` ذخیره میکنیم          
-زمانی که یک کتاب حذف میشود و یا مقدار ``salesAmount``  عوض میشود مجددا ``query`` به دیتابیس زده میشود و ``redis`` را پر میکنیم
-## چالش های پروژه 
- اولین چالشی که در این پروژه داشتیم استفاده از ``pnpm`` در مایکروسرویس ها بود که به version های پکیج ``@nestjs/common`` , ``@nestjs/core`` , ``@nestjs/microservices``  حساس بود که باید در یک  ``version`` باشند          
- چالش های مربوط به ``RMQ``      
- چالش اصلی و زمان بر پروژه قسمت ``Docker``   بود  . برای register کردن پکیج ها و pull image از داکر باید زمان زیادی صرف میکردیم و در اکثر مواقع به دلایل محدویت اینترنت با مشکل رو به رو میشد
- ##  بهبود ویژگی
-  اگر زمان بیشتری برای توسعه داشتم قسمت ``Redis`` مربوط به محبوب ترین کتاب ها را بهبود میبخشیدم که لازم نباشد بعد از حذف کتاب یا کم و یا زیاد شدن مقدار ``SalesAmount`` لازم نباشد که query به دیتابیس داشته باشیم و تا جایی که امکان داشت در سطح کد این کار را انجام میدادم و سعی میکردم کمترین ``query`` به دیتابیس را داشته باشیم        
+### Authentication Service
+This service is responsible for user management. Users can perform the Register and Login processes using this service. Upon receiving a token, users can authenticate themselves for site access. Each user can have a Premium subscription, allowing them to view the list of books requiring a Premium subscription.
 
+### Books Service
+This service manages the book collection. Various genres related to books can be defined using this service, and we can use genre IDs to define books to obtain relevant genre information. Each book includes its title, author's name, information about the relevant genre, publication date, and description. Books can be defined with the aforementioned attributes, and besides these fields, the isPremium field can be utilized. When this field is set to true, it means that only users with a premium subscription have access to the book.
 
-# Running app
-```bash 
-docker compose up
-```
+### Cart Service
+This service relates to the user's shopping cart, where users can add available books to their cart. The shopping cart process works in such a way that each user can have multiple shopping carts but can only have one open cart. Determining whether the cart is still open or not is done through the isPaid field. When the user pays for their shopping cart, the cart changes to paid, and for a new order, a new shopping cart must be opened.
+
+### Http Gateway Service
+All project services are added to this service, and routing for the project is handled here.
